@@ -75,6 +75,7 @@ app.get('/', (request, response) => {
     <li><a href="/bake?baked_good=loaves+of+bread&count=5">Bake 5 loaves of bread</a> — notice how we represent spaces in the URL.</li>
     <li><a href="/bake?baked_good=cupcakes&count=1138">Bake 1138 cupcakes</a></li>
     <li><a href="/greet?name=WXYZ">Greetings Page</a></li>
+    <li><a href="/todo?task=">To-Do List</a></li>
     </ul>
   `;
 
@@ -172,7 +173,7 @@ app.get('/greet', (request, response) => {
     <p>
       What is your <code>name</code>?
     </p>
-    <form method="GET" action="/name">
+    <form method="GET" action="/greet">
       <div class="form-section">
         <label for="name">Name:</label>
         <input type="text" name="name" id="name" required>
@@ -190,6 +191,50 @@ app.get('/greet', (request, response) => {
       </p>
     `;
   }
+
+  response.send(getLayoutHTML(content));
+});
+
+
+// Visit, e.g., /bake?baked_good=waffles&count=20
+app.get('/todo', (request, response) => {
+  let task = request.query.task
+
+  let content = `
+    <h1>To-do List!</h1>
+    <p>
+      <a href='/'>Back to the homepage</a>
+    </p>
+    <p>
+      Add a task in <code>task</code> in the url or in the form below!
+    </p>
+    <form method="GET" action="/todo">
+      <div class="form-section">
+        <label for="task">Task:</label>
+        <input type="text" name="task" id="task" required>
+      </div>
+      <div class="form-section">
+        <input type="submit" value="Add task!">
+      </div>
+    </form>
+    <h2>Your To-Do List</h2>
+  `;
+
+  let fs = require('fs');
+
+  fs.appendFileSync('todos.txt', task + '\n');
+
+  let toDoList = fs.readFileSync('todos.txt', 'utf-8');
+
+  let toDoArray = toDoList.split('\n')
+
+  content += '<ol>';
+
+  for (let i = 0; i < toDoArray.length; i++) {
+    content += `<li>${toDoArray[i]}</li>`;
+  }
+
+  content += '</ol>';
 
   response.send(getLayoutHTML(content));
 });
