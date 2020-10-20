@@ -74,6 +74,7 @@ app.get('/', (request, response) => {
     <li><a href="/bake?baked_good=cookies&count=10">Bake 10 cookies</a></li>
     <li><a href="/bake?baked_good=loaves+of+bread&count=5">Bake 5 loaves of bread</a> — notice how we represent spaces in the URL.</li>
     <li><a href="/bake?baked_good=cupcakes&count=1138">Bake 1138 cupcakes</a></li>
+    <li><a href="/greet?name=WXYZ">Greetings Page</a></li>
     </ul>
   `;
 
@@ -154,6 +155,41 @@ app.get('/bake', (request, response) => {
   }
 
   content += '</ul>';
+
+  response.send(getLayoutHTML(content));
+});
+
+// Visit greetings page
+app.get('/greet', (request, response) => {
+  let name = request.query.name;
+
+  if (request.query.name === undefined) {
+    let content = `
+    <h1>There's no greeting to give to you.</h1>
+    <p>
+      <a href='/'>Back to the homepage</a>
+    </p>
+    <p>
+      What is your <code>name</code>?
+    </p>
+    <form method="GET" action="/name">
+      <div class="form-section">
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+      </div>
+      <div class="form-section">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+  `;
+  } else {
+    content = `
+      <h1>Greetings, ${name}!</h1>
+      <p>
+        <a href='/'>Back to the homepage</a>
+      </p>
+    `;
+  }
 
   response.send(getLayoutHTML(content));
 });
