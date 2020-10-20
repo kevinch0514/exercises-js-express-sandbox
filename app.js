@@ -52,23 +52,63 @@ app.get('/', (request, response) => {
   let usrname = request.query.usrname;
   let psw = request.query.psw;
 
-  console.log(`The username is: ${usrname}`);
-  console.log(`The password is: ${psw}`);
+  if ((usrname !== 'Jesse') || (psw !== 'waffles')) {
+    console.log(`The username is: ${usrname}`);
+    console.log(`The password is: ${psw}`);
+
+    let content = `
+      <h1>Sign In</h1>
+      <form action="/">
+        <label for="usrname">Username:</label>
+        <input type="text" id="usrname" name="usrname" required>
+
+        <label for="psw">Password:</label>
+        <input type="password" id="psw" name="psw" required>
+
+        <input type="submit" value="Submit">
+      </form>
+    `
+
+    content += 'Please enter the correct username and password'
+
+    response.send(getLayoutHTML(content));
+  } else if ((usrname === 'Jesse') && (psw === 'waffles')) {
+    let appDescription = `
+    <p>This application is meant to highlight some of the essential ideas in web development.  You should already be familiar with some basic HTML and know how to create a standalone, static HTML document that you can open with your browser.</p>
+    <p>At its core, every web application has the same job: listen for incoming requests, generate an HTML document, and send that document back to the browser.  Unlike a static HTML document, a web application can respond to dynamic, user-supplied information.  If a static HTML document is like a vending machine then a web application is like a restaurant with a real, live chef.</p>
+  `;
 
   let content = `
-    <form action="/">
-      <label for="usrname">Username:</label>
-      <input type="text" id="usrname" name="usrname" required>
+    <h1>Hello, World!</h1>
+    ${appDescription}
+    <p>Start exploring by clicking the links below.</p>
+    <h2>Static Pages</h2>
+    <p>These pages don't respond to any user-supplied data.</p>
+    <ul>
+    <li><a href="/waffles">Plain ol' waffles</a></li>
+    <li><a href="/waffles/chocolate">Chocolate waffles</a></li>
+    </ul>
 
-      <label for="psw">Password:</label>
-      <input type="password" id="psw" name="psw" required>
+    <h2>Dynamic Pages</h2>
+    <p>These pages <em>do</em> respond to user-supplied data.  When you visit the links below, look at the URL.  Everything after the <code>?</code> character is called the _query string_ and it's one place we can supply dynamic information. </p>
+    <ul>
+    <li><a href="/waffles/custom?type=banana">Banana waffles</a></li>
+    <li><a href="/waffles/custom?type=blueberry">Blueberry waffles</a></li>
+    <li><a href="/waffles/custom?type=nutella">Nutella waffles</a></li>
+    <li><a href="/bake?baked_good=cookies&count=10">Bake 10 cookies</a></li>
+    <li><a href="/bake?baked_good=loaves+of+bread&count=5">Bake 5 loaves of bread</a> — notice how we represent spaces in the URL.</li>
+    <li><a href="/bake?baked_good=cupcakes&count=1138">Bake 1138 cupcakes</a></li>
+    <li><a href="/greet?name=WXYZ">Greetings Page</a></li>
+    <li><a href="/todo?task=">To-Do List</a></li>
+    </ul>
+  `;
 
-      <input type="submit" value="Submit">
-    </form>
-  `
+  let pageHtml = getLayoutHTML(content);
 
-  response.send(getLayoutHTML(content));
+  response.send(pageHtml);
+  };
 });
+
 // app.get('/', (request, response) => {
 //   let appDescription = `
 //     <p>This application is meant to highlight some of the essential ideas in web development.  You should already be familiar with some basic HTML and know how to create a standalone, static HTML document that you can open with your browser.</p>
